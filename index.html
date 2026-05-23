@@ -1,19 +1,592 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prompt de Génération de Site Web...</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist+Mono:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Roboto:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&family=Space+Grotesk:wght@300..700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sillage - L'expérience virtuelle</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configuration du Design System Cascadia -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cascadia: {
+                            teal: '#2D5461',     /* Dark Teal */
+                            blue: '#09A0E1',     /* Blue Bell */
+                            mint: '#F5FFDC',     /* Frosted Mint */
+                            spruce: '#244E2D',   /* Dark Spruce */
+                            khaki: '#424130',    /* Dark Khaki */
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+        
+        .hero-gradient { background: linear-gradient(to bottom, rgba(45,84,97,0.2) 0%, rgba(45,84,97,0.85) 100%); }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; z-index: 50; }
+        @media (min-width: 1024px) {
+            .bottom-nav { display: none; }
+        }
+        
+        /* Styles pour le calendrier interactif */
+        .day-cell {
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 2.25rem;
+            height: 2.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] text-cascadia-teal pb-20 lg:pb-0">
+
+    <!-- Header / Navigation Desktop -->
+    <nav class="absolute top-0 w-full z-50 flex justify-between items-center p-6 text-white max-w-7xl left-1/2 -translate-x-1/2">
+        <div class="text-2xl font-serif font-bold tracking-tight text-white flex items-center gap-2">
+            <!-- Icône Logo stylisée -->
+            <img src="./img/Calque 7.png" alt="" style="height: 40px; width: auto;">
+            SILLAGE
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <!-- CHANGEMENT ICI : min-h-[70vh] au lieu de h-screen, justify-center au lieu de justify-end -->
+    <section id="accueil" class="relative min-h-[70vh] md:h-screen flex flex-col justify-center overflow-hidden pt-20 pb-8 md:pb-0">
+        <img src="./img/E73E03F4-D6FA-47ED-9BC3-1C56C70B2BC7.png" alt="Cascade de Sillans" class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full object-cover object-center">
+        <div class="absolute inset-0 hero-gradient"></div>
+        
+        <!-- CHANGEMENT ICI : marges réduites pour remonter le contenu -->
+        <div class="relative p-6 max-w-3xl mx-auto w-full text-center md:text-left mt-4 md:mt-0">
+            
+            <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight font-serif">
+                La nature à<br>chaque instant.
+            </h1>
+            
+            <p class="text-cascadia-mint text-lg md:text-2xl font-serif font-bold mt-2 md:mt-4 italic drop-shadow-sm">
+                Fluidité. Pureté. Équilibre.
+            </p>
+            <p class="text-gray-100 mt-4 md:mt-6 max-w-lg text-sm md:text-lg leading-relaxed mx-auto md:mx-0">
+                Une cascade classée. Un écosystème fragile. Une expérience à réinventer par l'immersion numérique pour préserver notre patrimoine.
+            </p>
+            
+            <div class="mt-6 md:mt-10 flex flex-col md:flex-row gap-3 md:gap-4 justify-center md:justify-start">
+                <a href="#vue-360" class="bg-cascadia-blue hover:bg-[#088bc4] transition text-white py-3 px-5 md:py-4 md:px-8 rounded-lg font-bold text-sm md:text-base flex items-center justify-center gap-2 md:gap-3 shadow-lg shadow-cascadia-blue/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                    </svg>
+                    Découvrir la collection 360°
+                </a>
+                <a href="#affluence-section" class="bg-white hover:bg-gray-50 transition text-cascadia-teal py-3 px-5 md:py-4 md:px-8 rounded-lg font-bold text-sm md:text-base flex items-center justify-center gap-2 md:gap-3 border border-cascadia-teal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                    Préparez votre visite
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-6 py-16 space-y-24">
+
+        <!-- Section 1: Un site qui souffre -->
+        <section>
+            <span class="text-cascadia-spruce font-bold uppercase tracking-widest text-xs">Le constat</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-8 text-cascadia-teal font-serif">Un site qui souffre</h2>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="relative group overflow-hidden rounded-xl h-64 md:h-80 shadow-md">
+                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=800" alt="Nature" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-cascadia-teal/30"></div>
+                    <span class="absolute bottom-5 left-5 text-white font-serif text-xl">Beautés naturelles</span>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl h-64 md:h-80 shadow-md">
+                    <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=800" alt="Impact" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-cascadia-teal/30"></div>
+                    <span class="absolute bottom-5 left-5 text-white font-serif text-xl">L'impact humain</span>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-cascadia-mint/50 p-8 md:p-12 rounded-xl text-center space-y-4 border border-cascadia-mint">
+                <p class="font-serif text-xl md:text-2xl text-cascadia-teal leading-snug">
+                    350 000 visiteurs par été. Le site souffre. Non par malveillance, mais par manque d'information.
+                </p>
+                <p class="text-cascadia-teal/70 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+                    Sillage propose une alternative : visitez virtuellement pour protéger réellement. Préservez la faune et la flore avant, pendant et après votre passage.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Votre Visite Commence Ici -->
+        <section>
+            <span class="text-cascadia-spruce font-bold uppercase tracking-widest text-xs">Bonne visite</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-8 text-cascadia-teal font-serif">Votre Visite Commence Ici</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Cards -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 bg-cascadia-mint text-cascadia-teal rounded-full flex items-center justify-center mb-4">
+                        <!-- Icon Pureté (Goutte) -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S12 3 12 3s-4.5 4.97-4.5 9 2.015 9 4.5 9z"></path></svg>
+                    </div>
+                    <h3 class="font-serif font-bold text-base text-cascadia-teal mb-1">Pureté</h3>
+                    <p class="text-xs text-cascadia-teal/60 leading-relaxed">La biodiversité est fragile, n'y touchez pas.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 bg-cascadia-mint text-cascadia-teal rounded-full flex items-center justify-center mb-4">
+                        <!-- Icon Sentier -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </div>
+                    <h3 class="font-serif font-bold text-base text-cascadia-teal mb-1">Sentiers</h3>
+                    <p class="text-xs text-cascadia-teal/60 leading-relaxed">Terrain rocailleux, restez sur les chemins.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 bg-cascadia-mint text-cascadia-teal rounded-full flex items-center justify-center mb-4">
+                        <!-- Icon Baignade -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                    </div>
+                    <h3 class="font-serif font-bold text-base text-cascadia-teal mb-1">Sans Baignade</h3>
+                    <p class="text-xs text-cascadia-teal/60 leading-relaxed">Protéger la biodiversité locale.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center">
+                    <div class="w-14 h-14 bg-cascadia-mint text-cascadia-teal rounded-full flex items-center justify-center mb-4">
+                        <!-- Icon Incendie / Soleil -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </div>
+                    <h3 class="font-serif font-bold text-base text-cascadia-teal mb-1">Prévention</h3>
+                    <p class="text-xs text-cascadia-teal/60 leading-relaxed">Risque incendie élevé en été.</p>
+                </div>
+            </div>
+
+            <!-- Alerte CTA -->
+            <div class="mt-8 bg-cascadia-mint p-5 rounded-xl flex items-center justify-between border border-cascadia-spruce/10 shadow-sm">
+                <div class="flex items-center gap-4">
+                    <div class="bg-cascadia-blue p-2.5 rounded-lg text-white shadow-md shadow-cascadia-blue/20">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm text-cascadia-teal">Visitez Sillage virtuellement ?</p>
+                        <p class="text-[11px] text-cascadia-teal/70">Une expérience sans impact sur la nature.</p>
+                    </div>
+                </div>
+                <a href="#vue-360" class="p-2 hover:translate-x-1 transition-transform text-cascadia-teal bg-white rounded-lg border border-gray-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </a>
+            </div>
+
+            <!-- D'autres alertes -->
+            <div class="mt-10">
+                <p class="text-xs font-bold uppercase tracking-widest text-cascadia-khaki mb-4">D'autres alertes en cours</p>
+                <div class="space-y-3">
+                    <div class="bg-white p-4 rounded-xl flex items-center gap-4 shadow-sm border border-gray-100">
+                        <img src="https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=150" class="w-16 h-16 rounded-lg object-cover" alt="alerte 1">
+                        <div>
+                            <p class="font-serif font-bold text-sm text-cascadia-teal">Écoulement de l'eau réduit</p>
+                            <p class="text-[11px] text-cascadia-teal/60">Eau de Sillage - 14 : 15 h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Le Site Prend la Parole (Audio) -->
+        <section id="audio-section">
+            <span class="text-cascadia-spruce font-bold uppercase tracking-widest text-xs">Pendant la visite</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-8 text-cascadia-teal font-serif">Le Site Prend la Parole</h2>
+            
+            <div class="relative rounded-2xl overflow-hidden h-[450px] shadow-xl" id="audio-carousel">
+                <div class="carousel-slide absolute inset-0 transition-opacity duration-500 opacity-100 z-10" data-index="0">
+                    <img id="main-audio-img" src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=1200" alt="Forêt" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-cascadia-teal/40 mix-blend-multiply"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-cascadia-teal/90 to-transparent"></div>
+                    
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 w-[85%] md:w-[60%] bg-cascadia-teal/80 backdrop-blur-xl border border-white/10 p-6 rounded-xl text-white shadow-2xl">
+                        <div class="flex justify-between items-start mb-5">
+                            <div>
+                                <p class="text-cascadia-mint font-bold text-[10px] uppercase tracking-widest mb-1">Checkpoint <span class="slide-num">#1</span>/5</p>
+                                <p class="font-serif font-bold text-2xl slide-title leading-tight">L'Entrée du Bois</p>
+                            </div>
+                        </div>
+
+                        <div class="password-ui">
+                            <p class="text-sm opacity-90 mb-4 leading-relaxed font-light text-cascadia-mint/80">Entrez le code secret pour déverrouiller l'histoire immersive de ce point d'intérêt.</p>
+                            <div class="flex gap-2">
+                                <input type="text" class="pwd-input flex-1 bg-black/20 border border-white/20 rounded-lg px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:border-cascadia-blue" placeholder="Code secret">
+                                <button class="btn-unlock bg-cascadia-blue hover:bg-[#088bc4] px-6 rounded-lg font-bold text-sm transition-colors text-white shadow-lg">Valider</button>
+                            </div>
+                        </div>
+
+                        <div class="audio-ui hidden">
+                            <div class="flex items-center gap-4 bg-black/20 p-4 rounded-xl border border-white/5">
+                                <button class="w-12 h-12 bg-cascadia-blue rounded-full flex items-center justify-center shrink-0 shadow-lg hover:scale-105 transition-transform">
+                                    <svg class="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                                </button>
+                                <div class="flex-1">
+                                    <div class="bg-white/20 h-1.5 rounded-full w-full overflow-hidden">
+                                        <div class="bg-cascadia-mint h-full w-[0%]"></div>
+                                    </div>
+                                    <div class="flex justify-between text-[11px] mt-2 opacity-80 font-medium">
+                                        <span>0:00</span>
+                                        <span>3:45</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btn-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-20 transition border border-white/20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button id="btn-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white z-20 transition border border-white/20">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+        </section>
+
+        <!-- Section 4: L'émerveillement (Focus principal) -->
+        <section id="vue-360">
+            <span class="text-cascadia-spruce font-bold uppercase tracking-widest text-xs">Le Sanctuaire Virtuel</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-8 text-cascadia-teal font-serif">L'Émerveillement, Partout</h2>
+            
+            <div class="bg-white rounded-2xl overflow-hidden relative shadow-lg border border-gray-100">
+                <div class="relative h-64 md:h-[500px]">
+                    <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=1200" alt="VR View" class="w-full h-full object-cover">
+                    <div class="absolute top-6 right-6 bg-cascadia-teal/80 text-cascadia-mint text-[10px] px-4 py-2 rounded-full uppercase font-bold tracking-widest backdrop-blur-md border border-white/20">
+                        Visite 360° Interactive
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="group w-24 h-24 bg-white/10 backdrop-blur-md rounded-full border border-white/30 flex items-center justify-center hover:scale-110 transition-transform shadow-2xl">
+                            <div class="w-6 h-6 bg-cascadia-blue rounded-full group-hover:animate-ping"></div>
+                            <div class="absolute w-4 h-4 bg-white rounded-full"></div>
+                        </button>
+                    </div>
+                </div>
+                <div class="p-8 md:p-12 text-center bg-cascadia-mint/30">
+                    <p class="text-cascadia-teal text-base md:text-lg mb-8 leading-relaxed max-w-2xl mx-auto">
+                        Explorez chaque recoin sans impact. Grâce à notre visite interactive haute définition, découvrez des vues uniques inaccessibles au public, tout en préservant l'écosystème local.
+                    </p>
+                    <button class="bg-cascadia-teal hover:bg-cascadia-teal/90 text-white px-10 py-4 rounded-lg text-base font-bold shadow-xl transition-all inline-flex items-center gap-3">
+                         <svg class="w-5 h-5 text-cascadia-blue" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
+                        Lancer l'immersion 360°
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Affluence -->
+        <section id="affluence-section" class="bg-white p-8 md:p-12 rounded-2xl shadow-xl shadow-cascadia-teal/5 border border-gray-100">
+            <span class="text-cascadia-spruce font-bold uppercase tracking-widest text-xs">Durabilité & Équilibre</span>
+            <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-4 text-cascadia-teal font-serif">Respirez. Profitez.</h2>
+            <p class="text-cascadia-teal/70 text-sm mb-10 leading-relaxed max-w-3xl">Signalez votre présence pour aider à réguler les flux. Alternative : privilégiez la visite virtuelle en cas de forte affluence pour garantir la tranquillité du site.</p>
+            
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-8 bg-gray-50 p-4 rounded-xl">
+                    <h3 class="font-serif font-bold flex items-center gap-3 text-cascadia-teal text-xl">
+                        <svg class="w-6 h-6 text-cascadia-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z"></path></svg>
+                        <span id="current-month-display">Juin 2026</span>
+                    </h3>
+                    <div class="flex gap-2">
+                        <button id="btn-prev-month" class="p-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-cascadia-teal transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg></button>
+                        <button id="btn-next-month" class="p-2.5 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-cascadia-teal transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></button>
+                    </div>
+                </div>
+                
+                <div id="calendar-grid" class="grid grid-cols-7 gap-y-6 text-center text-sm px-2">
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Lu</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Ma</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Me</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Je</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Ve</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Sa</div>
+                    <div class="text-cascadia-teal/50 font-bold uppercase text-[10px] tracking-widest">Di</div>
+                </div>
+
+                <div class="flex flex-wrap gap-4 md:gap-8 mt-10 text-[11px] text-cascadia-teal/80 font-bold justify-center bg-cascadia-mint/50 p-4 rounded-xl border border-cascadia-mint">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-cascadia-mint border border-cascadia-spruce/30"></span> Idéal</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-100 border border-orange-400"></span> Modérée</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-100 border border-red-400"></span> Forte</div>
+                </div>
+            </div>
+
+            <div class="mt-10 bg-cascadia-teal/5 p-8 rounded-2xl border border-cascadia-teal/10">
+                <div class="mb-8">
+                    <p class="text-[10px] font-black uppercase text-cascadia-khaki mb-2 tracking-widest">État du site le <span id="selected-date-text" class="text-cascadia-teal">...</span></p>
+                    <div class="flex items-center gap-3">
+                        <span id="affluence-dot" class="w-4 h-4 rounded-full bg-gray-300"></span>
+                        <span id="affluence-label" class="font-serif font-bold text-2xl text-cascadia-teal">Sélectionnez une date</span>
+                    </div>
+                </div>
+
+                <button id="btn-presence" class="w-full bg-cascadia-teal hover:bg-cascadia-teal/90 text-white py-4 rounded-lg font-bold text-base flex items-center justify-center gap-4 transition-all duration-300 shadow-xl active:scale-[0.98]">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span>Je prévois d'y aller ce jour</span>
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-cascadia-teal text-white px-6 py-24">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+            <div class="w-16 h-16 text-cascadia-mint mb-8">
+                <!-- Icon Design System -->
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"></path></svg>
+            </div>
+            <h2 class="text-4xl font-bold mb-4 tracking-tight font-serif text-white">Émerveiller pour Préserver</h2>
+            <p class="text-cascadia-mint/80 text-lg max-w-lg mb-16 leading-relaxed font-light">
+                Un engagement pour la planète. Le meilleur moyen de protéger un lieu, c'est de l'admirer virtuellement ou au <b>bon moment</b>.
+            </p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-12 w-full border-t border-white/20 pt-16 text-sm text-cascadia-mint/60 mb-16">
+                <a href="#" class="hover:text-white transition">Partenaires</a>
+                <a href="#" class="hover:text-white transition">Département du Var</a>
+                <a href="#" class="hover:text-white transition">Mairie de Sillans</a>
+                <a href="#" class="hover:text-white transition">Comité Régional Tourisme</a>
+            </div>
+            
+            <div class="flex gap-8 text-[11px] uppercase tracking-widest text-cascadia-mint/50 font-bold mb-12">
+                <a href="#" class="hover:text-white transition">Mentions Légales</a>
+                <a href="#" class="hover:text-white transition">Confidentialité</a>
+                <a href="#" class="hover:text-white transition">Contact</a>
+            </div>
+            
+            <p class="text-[11px] text-cascadia-mint/40 font-medium">© 2026 Cascadia / Sillage - Tous droits réservés</p>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="bottom-nav bg-white/95 backdrop-blur-2xl border-t border-gray-100 px-8 py-4 flex justify-between items-center text-[10px] font-bold text-cascadia-teal/50 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+        <a href="#accueil" class="flex flex-col items-center gap-1.5 text-cascadia-blue group">
+            <svg class="w-6 h-6 transition-transform group-active:scale-110" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+            Accueil
+        </a>
+        <a href="#vue-360" class="flex flex-col items-center gap-1.5 group hover:text-cascadia-teal transition-colors">
+            <svg class="w-6 h-6 transition-transform group-active:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7l5-2.5 5.553 2.776a1 1 0 01.447.894v10.764a1 1 0 01-1.447.894L15 17l-6 3z"></path></svg>
+            Visite 360
+        </a>
+        <a href="#audio-section" class="flex flex-col items-center gap-1.5 group hover:text-cascadia-teal transition-colors">
+            <svg class="w-6 h-6 transition-transform group-active:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+            Audio
+        </a>
+        <a href="#affluence-section" class="flex flex-col items-center gap-1.5 group hover:text-cascadia-teal transition-colors">
+            <svg class="w-6 h-6 transition-transform group-active:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 00-2 2z"></path></svg>
+            Affluence
+        </a>
+    </nav>
+
+    <script>
+        const calendarGrid = document.getElementById('calendar-grid');
+        const selectedDateText = document.getElementById('selected-date-text');
+        const affluenceDot = document.getElementById('affluence-dot');
+        const affluenceLabel = document.getElementById('affluence-label');
+        const btnPresence = document.getElementById('btn-presence');
+        const currentMonthDisplay = document.getElementById('current-month-display');
+        const btnPrevMonth = document.getElementById('btn-prev-month');
+        const btnNextMonth = document.getElementById('btn-next-month');
+
+        // Mise à jour des couleurs avec la palette du Design System (sauf rouge/orange d'alerte gardés pour l'UX fonctionnelle)
+        const affluenceConfig = {
+            'low': { baseClass: 'bg-cascadia-mint text-cascadia-spruce hover:bg-[#e4f3c1]', activeClass: 'bg-cascadia-spruce text-white shadow-md scale-110 font-bold', dotColor: 'bg-cascadia-spruce', shadow: 'rgba(36,78,45,0.5)', text: 'Affluence faible (Idéal)' },
+            'medium': { baseClass: 'bg-orange-50 text-orange-800 hover:bg-orange-100', activeClass: 'bg-orange-500 text-white shadow-md scale-110 font-bold', dotColor: 'bg-orange-500', shadow: 'rgba(249,115,22,0.5)', text: 'Affluence modérée' },
+            'high': { baseClass: 'bg-red-50 text-red-800 hover:bg-red-100', activeClass: 'bg-red-500 text-white shadow-md scale-110 font-bold', dotColor: 'bg-red-500', shadow: 'rgba(239,68,68,0.5)', text: 'Forte affluence' }
+        };
+
+        const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+        const year = 2026;
+        let currentMonth = 5; 
+        let plannedDateObj = null; 
+        let currentSelectedObj = null;
+
+        function updateCellUI(cell, day, monthIndex, affluence, isActive) {
+            const isPlanned = plannedDateObj && plannedDateObj.day === day && plannedDateObj.month === monthIndex;
+            let className = 'day-cell w-9 h-9 rounded-full cursor-pointer transition-all duration-200 flex items-center justify-center mx-auto ';
+            
+            if (isPlanned) {
+                // Utilise Blue Bell pour la planification
+                className += 'bg-cascadia-blue text-white font-bold shadow-lg ring-2 ring-cascadia-blue/30 ';
+                if (isActive) className += 'scale-110 ';
+            } else {
+                const conf = affluenceConfig[affluence];
+                if (isActive) {
+                    className += conf.activeClass;
+                } else {
+                    className += conf.baseClass;
+                }
+            }
+            cell.className = className;
+        }
+
+        function updatePresenceButtonUI() {
+            if (!currentSelectedObj) return;
+            const isPlanned = plannedDateObj && plannedDateObj.day === currentSelectedObj.day && plannedDateObj.month === currentSelectedObj.month;
+            
+            if (isPlanned) {
+                btnPresence.innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg><span class="text-white">J'annule ma venue</span>`;
+                btnPresence.className = "w-full bg-red-500 hover:bg-red-600 text-white py-4 rounded-lg font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 shadow-lg";
+            } else {
+                btnPresence.innerHTML = `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span class="text-white">Je prévois d'y aller ce jour</span>`;
+                btnPresence.className = "w-full bg-cascadia-teal hover:bg-cascadia-teal/90 text-white py-4 rounded-lg font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 shadow-lg";
+            }
+        }
+
+        function renderCalendar(monthIndex) {
+            const headers = Array.from(calendarGrid.children).slice(0, 7);
+            calendarGrid.innerHTML = '';
+            headers.forEach(h => calendarGrid.appendChild(h));
+
+            currentMonthDisplay.textContent = `${months[monthIndex]} ${year}`;
+
+            const firstDay = new Date(year, monthIndex, 1);
+            let startingDay = firstDay.getDay() - 1; 
+            if (startingDay === -1) startingDay = 6; 
+
+            const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+
+            for (let i = 0; i < startingDay; i++) {
+                const empty = document.createElement('div');
+                calendarGrid.appendChild(empty);
+            }
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const cell = document.createElement('div');
+                cell.textContent = d;
+                
+                const isWeekend = (startingDay + d - 1) % 7 >= 5;
+                let affluence = 'low';
+                if (monthIndex === 6 || monthIndex === 7) { 
+                    affluence = isWeekend ? 'high' : 'medium';
+                    if (d % 4 === 0) affluence = 'high';
+                } else if (monthIndex >= 4 && monthIndex <= 8) { 
+                    affluence = isWeekend ? 'medium' : 'low';
+                    if (d % 7 === 0) affluence = 'high';
+                } else { 
+                    affluence = isWeekend ? 'medium' : 'low';
+                }
+
+                cell.setAttribute('data-affluence', affluence);
+                cell.setAttribute('data-day', d);
+                
+                updateCellUI(cell, d, monthIndex, affluence, false);
+                cell.addEventListener('click', () => selectDay(cell, d, monthIndex, affluence));
+                calendarGrid.appendChild(cell);
+
+                const isCurrentSelected = currentSelectedObj && currentSelectedObj.day === d && currentSelectedObj.month === monthIndex;
+                const isInitialDefault = !currentSelectedObj && monthIndex === 5 && d === 15;
+                
+                if (isCurrentSelected || isInitialDefault) {
+                    setTimeout(() => selectDay(cell, d, monthIndex, affluence), 50);
+                }
+            }
+
+            btnPrevMonth.disabled = currentMonth === 0;
+            btnNextMonth.disabled = currentMonth === 11;
+            btnPrevMonth.style.opacity = currentMonth === 0 ? '0.3' : '1';
+            btnNextMonth.style.opacity = currentMonth === 11 ? '0.3' : '1';
+        }
+
+        function selectDay(cell, day, monthIndex, affluence) {
+            currentSelectedObj = { day, month: monthIndex, year, affluence };
+            
+            const allCells = document.querySelectorAll('.day-cell');
+            allCells.forEach(c => {
+                const cDay = parseInt(c.getAttribute('data-day'));
+                const cAff = c.getAttribute('data-affluence');
+                if(cAff && !isNaN(cDay)) {
+                    updateCellUI(c, cDay, monthIndex, cAff, false);
+                }
+            });
+
+            updateCellUI(cell, day, monthIndex, affluence, true);
+            const conf = affluenceConfig[affluence];
+            selectedDateText.textContent = `${day} ${months[monthIndex]}`;
+            affluenceDot.className = `w-4 h-4 rounded-full ${conf.dotColor}`;
+            affluenceDot.style.boxShadow = `0 0 10px ${conf.shadow}`;
+            affluenceLabel.textContent = conf.text;
+            updatePresenceButtonUI();
+        }
+
+        btnPrevMonth.addEventListener('click', () => { if (currentMonth > 0) { currentMonth--; renderCalendar(currentMonth); } });
+        btnNextMonth.addEventListener('click', () => { if (currentMonth < 11) { currentMonth++; renderCalendar(currentMonth); } });
+
+        btnPresence.addEventListener('click', () => {
+            if(!currentSelectedObj) return;
+            const isPlanned = plannedDateObj && plannedDateObj.day === currentSelectedObj.day && plannedDateObj.month === currentSelectedObj.month;
+            if (isPlanned) { plannedDateObj = null; } else { plannedDateObj = { ...currentSelectedObj }; }
+            const allCells = document.querySelectorAll('.day-cell');
+            allCells.forEach(c => {
+                const cDay = parseInt(c.getAttribute('data-day'));
+                const cAff = c.getAttribute('data-affluence');
+                if(cAff && !isNaN(cDay)) {
+                    const isActive = (cDay === currentSelectedObj.day);
+                    updateCellUI(c, cDay, currentMonth, cAff, isActive);
+                }
+            });
+            updatePresenceButtonUI();
+        });
+
+        renderCalendar(currentMonth);
+
+        const checkpoints = [
+            { title: "L'Entrée du Bois", img: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=1200" },
+            { title: "La Traversée du Vallon", img: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&q=80&w=1200" },
+            { title: "Le Secret des Roches", img: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&q=80&w=1200" },
+            { title: "Le Souffle de la Cascade", img: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200" },
+            { title: "L'Horizon de Sillage", img: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=1200" }
+        ];
+
+        let currentSlide = 0;
+        const mainAudioImg = document.getElementById('main-audio-img');
+        const slideTitle = document.querySelector('.slide-title');
+        const slideNum = document.querySelector('.slide-num');
+        const pwdUi = document.querySelector('.password-ui');
+        const audioUi = document.querySelector('.audio-ui');
+        const pwdInput = document.querySelector('.pwd-input');
+        const btnUnlock = document.querySelector('.btn-unlock');
+        const unlockedSlides = new Set();
+
+        function updateSlide() {
+            const data = checkpoints[currentSlide];
+            mainAudioImg.style.opacity = 0;
+            setTimeout(() => {
+                mainAudioImg.src = data.img;
+                slideTitle.textContent = data.title;
+                slideNum.textContent = `${currentSlide + 1}`;
+                mainAudioImg.style.opacity = 1;
+                if(unlockedSlides.has(currentSlide)) {
+                    pwdUi.classList.add('hidden');
+                    audioUi.classList.remove('hidden');
+                } else {
+                    pwdUi.classList.remove('hidden');
+                    audioUi.classList.add('hidden');
+                    pwdInput.value = ''; 
+                }
+            }, 200);
+        }
+
+        document.getElementById('btn-next').addEventListener('click', () => { currentSlide = (currentSlide + 1) % checkpoints.length; updateSlide(); });
+        document.getElementById('btn-prev').addEventListener('click', () => { currentSlide = (currentSlide - 1 + checkpoints.length) % checkpoints.length; updateSlide(); });
+        btnUnlock.addEventListener('click', () => { if(pwdInput.value.trim() !== '') { unlockedSlides.add(currentSlide); pwdUi.classList.add('hidden'); audioUi.classList.remove('hidden'); } });
+    </script>
+</body>
 </html>
